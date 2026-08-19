@@ -93,36 +93,71 @@ research question.
 
 ---
 
-## Phase 1 — Respiratory physiology
+## Phase 1 — Respiratory physiology prototype
 
-The first priority is obtaining reliable, synchronized thoracic and abdominal
-respiratory-effort data.
+The first phase of SomniMate is based on a modular embedded prototype rather than
+an existing respiratory-monitoring instrument.
 
-A **two-channel BreathPal system with thorax and abdomen RIP straps** is being used
-as the initial respiratory research instrument.
+The purpose of this phase is to establish the complete acquisition chain and begin
+collecting respiratory and supporting physiological signals using readily available
+development boards before designing custom SomniMate hardware.
+
+The prototype is built around:
+
+- **Seeed nRF54L20A development board** — main controller and firmware platform
+- **ADS1115 development board** — external ADC for the respiratory-effort signal
+- **MAX30102 development board** — experimental PPG / heart-rate / SpO₂ channel
+- **BH1750 development board** — ambient-light and recording-context channel
+- respiratory-effort sensor interface
+- Zephyr firmware for acquisition, timing and communications
 
 ```mermaid
 flowchart LR
 
-    A["Thoracic RIP Strap"] --> C["BreathPal"]
-    B["Abdominal RIP Strap"] --> C
+    A["Respiratory Effort Sensor"] --> B["ADS1115<br/>External ADC"]
 
-    C --> D["PC Data Acquisition"]
+    B --> C["Seeed nRF54L20A<br/>Development Board"]
 
-    D --> E["Synchronized Thorax + Abdomen Signals"]
+    D["MAX30102<br/>PPG / HR"] --> C
 
-    E --> F["Breath Detection"]
-    F --> G["Amplitude & Morphology"]
-    F --> H["Timing & Phase"]
-    F --> I["Coordination / Discordance"]
+    E["BH1750<br/>Ambient Light"] --> C
 
-    G --> J["Pre-Event Analysis"]
+    C --> F["Zephyr Firmware"]
+
+    F --> G["Synchronized Sampling"]
+    F --> H["Timestamping"]
+    F --> I["Signal Quality / Fault Handling"]
+
+    G --> J["BLE / Data Logging"]
     H --> J
     I --> J
+
+    J --> K["PC Analysis"]
 ```
 
-Using an existing two-channel instrument allows the physiology and signal-analysis
-work to start without first having to design a custom RIP front end.
+The initial objective is not to produce a finished wearable. It is to create a
+known-good development platform where each sensor interface can be brought up,
+tested and characterised independently.
+
+The ADS1115 provides the first analog acquisition path for respiratory-effort
+experimentation. The MAX30102 and BH1750 provide supporting physiological and
+environmental context while also exercising the shared embedded acquisition
+framework.
+
+Once the basic firmware and sensor interfaces are stable, the prototype will be
+used to investigate:
+
+- respiratory waveform acquisition
+- sampling rate and timing requirements
+- signal amplitude and noise
+- filtering requirements
+- motion and environmental artefacts
+- synchronization between respiratory and supporting signals
+- reliable timestamped logging
+
+The results from this phase will define the requirements for the later custom
+SomniMate respiratory analog front end and, eventually, the second **SomniLink**
+respiratory-effort channel.
 
 ---
 

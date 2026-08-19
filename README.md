@@ -217,7 +217,7 @@ The investigation will progress through increasingly realistic measurements:
 - [x] I²C communication established
 - [x] ADS1115 evaluated
 - [x] MAX30102 evaluated
-- [ ] Integrate ADS1115 and MAX30102 into common application
+- [x] Integrate ADS1115 and MAX30102 into common application
 - [ ] Add BH1750
 - [ ] Integrate IMU
 - [ ] Integrate microphone

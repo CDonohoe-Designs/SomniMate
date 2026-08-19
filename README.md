@@ -207,26 +207,6 @@ The investigation will progress through increasingly realistic measurements:
 
 ---
 
-## Candidate signal features
-
-Initial analysis will remain simple and interpretable. Candidate measurements include:
-
-- respiratory rate and breath interval
-- thoracic and abdominal effort amplitude
-- change in effort across successive breaths
-- inspiratory / expiratory timing
-- waveform morphology
-- thorax-abdomen lag and phase
-- correlation and coordination
-- temporary discordance
-- paradox-like movement
-- body position and motion state
-- PPG heart-rate and pulse-amplitude response
-
-Machine learning is not required for the initial investigation. The first objective is to understand what the signals themselves are showing.
-
----
-
 ## Development status
 
 ### Phase 1 — Prototype and firmware

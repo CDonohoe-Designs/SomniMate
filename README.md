@@ -261,34 +261,12 @@ Machine learning is not required for the initial investigation. The first object
 
 ---
 
-## What would count as success?
-
-A potentially useful result would need to demonstrate:
-
-- measurable lead time before an event
-- repeatability across multiple events
-- acceptable false-positive behaviour
-- persistence across multiple nights
-- useful information beyond a single respiratory channel
-- physiological and signal-level interpretability
-
-A negative or inconclusive result is also valuable if the experiment is well-designed and documented.
-
----
 
 ## Repository scope
 
 This public repository is the portfolio-facing engineering record of SomniMate. It will contain selected system architecture, block diagrams, firmware milestones, hardware development, test methods, signal plots, analysis results, engineering decisions and lessons learned.
 
 Detailed working material, raw data and experimental development files are maintained separately.
-
----
-
-## Why I am building it
-
-SomniMate combines the areas of electronics engineering I most enjoy: **analog sensing, embedded hardware, firmware, PCB design, signal processing and real-world measurement.**
-
-My approach is to define the question, build the minimum system required to test it, collect evidence and allow the results to determine what gets developed next.
 
 ---
 

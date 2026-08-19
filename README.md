@@ -109,7 +109,7 @@ The result of Phase 1 is a set of measured requirements for the custom hardware 
 
 ### Phase 2 — Custom hardware
 
-Phase 2 moves from breakout boards to purpose-designed SomniMate hardware using the requirements established during Phase 1.
+Phase 2 moves from breakout boards to purpose-designed SomniMate hardware in Altium and using the requirements established during Phase 1.
 
 The intended system contains two coordinated respiratory-effort modules:
 

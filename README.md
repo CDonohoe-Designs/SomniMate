@@ -105,6 +105,18 @@ The prototype will then be used to investigate respiratory waveform acquisition,
 
 The result of Phase 1 is a set of measured requirements for the custom hardware rather than assumptions made in advance.
 
+**[View the current firmware bring-up examples](firmware/)**
+
+---
+
+## Wearable concept
+
+The current mechanical concept uses separate thoracic and abdominal effort straps with a centrally mounted controller. It is an early development concept intended to explore sensor placement, cable routing and wearable integration rather than final industrial design.
+
+![SomniMate wearable concept](assets/images/somnimate_wearable_concept.jpg)
+
+**[View image in assets](assets/images/somnimate_wearable_concept.jpg)**
+
 ---
 
 ### Phase 2 — Custom hardware
@@ -240,7 +252,6 @@ The investigation will progress through increasingly realistic measurements:
 - [ ] Perform thoraco-abdominal phase / coordination analysis
 
 ---
-
 
 ## Repository scope
 

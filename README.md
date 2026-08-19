@@ -95,9 +95,7 @@ research question.
 
 ## Phase 1 — Respiratory physiology prototype
 
-The first phase of SomniMate is based on a modular embedded prototype rather than
-an existing respiratory-monitoring instrument.
-
+The first phase of SomniMate is based on a modular embedded prototype.
 The purpose of this phase is to establish the complete acquisition chain and begin
 collecting respiratory and supporting physiological signals using readily available
 development boards before designing custom SomniMate hardware.

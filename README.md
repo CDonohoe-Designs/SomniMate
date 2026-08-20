@@ -230,9 +230,9 @@ The investigation will progress through increasingly realistic measurements:
 - [x] ADS1115 evaluated
 - [x] MAX30102 evaluated
 - [x] Integrate ADS1115 and MAX30102 into common application
-- [ ] Add BH1750
-- [ ] Integrate IMU
-- [ ] Integrate microphone
+- [x] Add BH1750
+- [x] Integrate IMU
+- [x] Integrate microphone
 - [ ] Implement synchronized timestamping
 - [ ] Implement structured data logging
 - [ ] Integrate respiratory sensing

@@ -154,17 +154,15 @@ This is a useful first-pass result for a battery-powered wearable sensor channel
 
 A real RIP belt is not an ideal inductor. I therefore added a series-resistance model and investigated increasing resonator loss.
 
-The simulation showed the expected behaviour: as belt series resistance increases, resonator Q and oscillator amplitude decrease. The current Rev A topology has strong oscillation margin around the provisional **2 Ω** case, while 5–10 Ω produces substantially reduced amplitude.
+The current Rev A topology has strong oscillation margin around the provisional **2 Ω** case, while 5–10 Ω produces substantially reduced amplitude.
 
 ![RIP belt series resistance sweep](Simulations/LTSpice/Images/05_RIP_Belt_Series_Resistance_Sweep_Steady_State.jpg)
-
-This makes actual belt resistance and Q important characterization parameters for physical prototype testing.
 
 ---
 
 ## Output conditioning
 
-The oscillator simulation also exposed an important interface requirement: the raw resonant waveform is not inherently a safe MCU logic signal.
+The oscillator simulation also exposed an important interface requirement: the raw resonant waveform is not a safe MCU logic signal.
 
 I therefore added:
 
@@ -200,7 +198,7 @@ The LTspice work has established enough confidence to move into Altium:
 
 - the discrete Colpitts architecture starts and sustains oscillation with the provisional RIP model
 - the calculated and simulated nominal frequencies are in close agreement
-- frequency responds strongly and monotonically to the assumed RIP inductance range
+- frequency responds strongly to the assumed RIP inductance range
 - the oscillator operates at approximately 0.61 mA / 2 mW in the current bias configuration
 - real belt series resistance / resonator Q will materially affect oscillator margin
 - the raw resonant node can exceed normal MCU input levels

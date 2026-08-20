@@ -1,1 +1,7 @@
 hardware/SomniMate_RIP_AFE_Prototype/Schematic/__Previews/RIP_AFE.SchDocPreview
+
+# LTspice generated simulation outputs
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.raw
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.log
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.net
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.op.raw

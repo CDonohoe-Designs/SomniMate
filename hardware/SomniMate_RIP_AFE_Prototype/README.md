@@ -172,6 +172,12 @@ I therefore added:
 
 For the physical design I intend to use a single-gate Schmitt buffer such as the **SN74LVC1G17**. The LTspice model uses the generic behavioral `schmtbuf` device to verify the transfer concept.
 
+### Final attenuated, protected and buffered Rev A schematic
+
+This final LTspice version includes the oscillator, attenuation network, Schottky clamp protection and Schmitt-trigger buffer. It represents the complete Rev A signal path from RIP inductance sensing through to a logic-level `FREQ_RIP` output intended for direct measurement by the MCU timer/counter.
+
+![Buffered Rev A Colpitts schematic](Simulations/LTSpice/Images/SomniMate_RIP_Colpitts_RevA_Buffered.jpg)
+
 ### Raw oscillator waveform
 
 ![OSC RAW](Simulations/LTSpice/Images/06_OSC_RAW_Nominal_2uH_2ohm.jpg)

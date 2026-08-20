@@ -1,0 +1,18 @@
+LTspice 24.1.4 for Windows
+Circuit: C:\Users\caoil\Git repos\SomniMate\hardware\SomniMate_RIP_AFE_Prototype\Simulations\LTSpice\SomniMate_RIP_Colpitts_RevA.net
+Start Time: Thu Aug 20 19:07:23 2026
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = trap
+WARNING: Node fb is floating.
+
+Direct Newton iteration for .op point succeeded.
+Total elapsed time: 7.084 seconds.
+
+Files loaded:
+C:\Users\caoil\Git repos\SomniMate\hardware\SomniMate_RIP_AFE_Prototype\Simulations\LTSpice\SomniMate_RIP_Colpitts_RevA.net
+C:\Users\caoil\AppData\Local\LTspice\lib\sub\Contrib\Toshiba\BJT\TMBT3904_enc.lib
+C:\Users\caoil\AppData\Local\LTspice\lib\sub\Contrib\Toshiba\DIODE\TBAT54S_enc.lib
+

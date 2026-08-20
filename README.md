@@ -287,12 +287,4 @@ The investigation will progress through increasingly realistic measurements:
 
 ---
 
-## Repository scope
-
-This public repository is the portfolio-facing engineering record of SomniMate. It will contain selected system architecture, block diagrams, firmware milestones, hardware development, test methods, signal plots, analysis results, engineering decisions and lessons learned.
-
-Detailed working material, raw data and experimental development files are maintained separately.
-
----
-
 **SomniMate is an independent research and engineering project. It is not a diagnostic or therapeutic medical device.**

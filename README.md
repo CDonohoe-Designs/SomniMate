@@ -337,22 +337,6 @@ I added the BH1750 as a contextual sensor rather than a primary respiratory sens
 
 ---
 
-## Experimental sequence
-
-I plan to progress through increasingly realistic measurements:
-
-1. **Calculation and LTspice verification** — establish a credible oscillator design before PCB layout.
-2. **AFE bench verification** — verify startup, frequency range, current consumption and digital output using one RIP channel.
-3. **Controlled awake recordings** — normal breathing, deeper breathing, breath holds, movement and posture changes.
-4. **Dual-channel integration** — add the second effort channel and establish synchronized thoracic and abdominal acquisition.
-5. **Resting / pre-sleep recordings** — evaluate signal stability, timestamps and data integrity.
-6. **Overnight exploratory recordings** — acquire longer datasets and identify artefacts.
-7. **Event-labelled recordings** — use a credible reference for event timing before drawing conclusions about pre-event behaviour.
-8. **Feature analysis** — compare periods before events with normal/control breathing.
-9. **Repeatability analysis** — determine whether candidate features repeat across events and nights.
-
----
-
 ## Development status
 
 ### Firmware and modular sensors

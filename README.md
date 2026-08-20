@@ -8,7 +8,7 @@ SomniMate is an engineering R&D project I am developing to investigate a specifi
 
 I am approaching the project as a hardware-first investigation. My priority is to acquire good respiratory data, understand the signal chain and test the hypothesis before making predictive claims.
 
-> **Project status:** active research and development. Firmware and sensor bring-up are in progress, and I have now started the first custom RIP front-end design in Altium.
+> **Project status:** active research and development. Firmware and sensor bring-up are in progress, and the first custom RIP front-end Rev A architecture has now been calculated and verified in LTspice before transfer into Altium.
 >
 > SomniMate is not a diagnostic medical device and is not intended for clinical use.
 
@@ -93,167 +93,22 @@ I originally evaluated the ADS1115 as part of the respiratory acquisition path. 
 
 ## Custom RIP front-end prototype
 
-I have started the first custom respiratory inductance plethysmography front-end design in Altium.
+For Rev A I selected a **discrete common-base Colpitts oscillator** so that RIP-belt inductance changes are represented directly as frequency changes.
 
-For Rev A I am deliberately designing **one respiratory channel only**. I want to build and characterise one RIP belt interface before duplicating it for synchronized thoracic and abdominal measurements.
+The provisional model uses a 2 µH belt inductance, 2 Ω series-loss model and 1 nF / 1 nF Colpitts capacitive divider. I calculated a nominal resonance of approximately **5.03 MHz**; LTspice produced approximately **4.9 MHz** for the nominal case. Sweeping the assumed belt inductance from 1.5 µH to 2.5 µH produced approximately 5.6 MHz to 4.4 MHz, confirming the expected frequency sensitivity.
 
-### Design criteria
-
-For this prototype I am prioritising:
-
-- small physical size
-- low power consumption
-- 3.3 V operation
-- low component count
-- low BOM cost
-- direct compatibility with the nRF54L20A
-- easy duplication for a second RIP channel
-- relative respiratory-effort measurement rather than calibrated lung-volume measurement
-- firmware baseline calibration
-- tolerance of belt-to-belt inductance variation
-- accessible test points and straightforward debug
-- low-voltage battery-powered wearable operation
-- non-clinical R&D use rather than medical-grade accuracy
-
-### Architecture choice
-
-I considered several ways of measuring the RIP belt:
-
-1. discrete LC oscillator with digital frequency measurement
-2. dedicated inductance-to-digital conversion, including the TI LDC1612
-3. oscillator followed by frequency-to-voltage conversion and ADC
-4. synchronous analog excitation/demodulation
-
-For the first prototype I selected a **discrete Colpitts LC oscillator**.
-
-I chose this approach because it keeps the sensing principle visible, has a low component count, can be made small and low power, and lets me measure the RIP belt directly as a change in oscillator frequency. It also gives me more useful analog-design and simulation work than using a dedicated inductance-to-digital IC for the first revision.
-
-The working signal chain is now:
+The oscillator simulation also showed that the raw resonant waveform requires conditioning before it reaches the Nordic MCU. I therefore added attenuation, Schottky limiting and a Schmitt-trigger stage to produce a clean **0–3.3 V `FREQ_RIP`** signal for direct timer/counter measurement.
 
 ```mermaid
 flowchart LR
     A["RIP Belt"] --> B["Colpitts LC Oscillator"]
-    B --> C["Schmitt / Logic Buffer"]
-    C --> D["FREQ_RIP"]
-    D --> E["nRF54L20A<br/>Timer / Counter"]
-    E --> F["Frequency Change"]
-    F --> G["Relative Respiratory Effort"]
+    B --> C["Attenuation + Clamp Protection"]
+    C --> D["Schmitt Buffer"]
+    D --> E["FREQ_RIP"]
+    E --> F["nRF54L20A<br/>Timer / Counter"]
 ```
 
-This means I do **not** need a conventional analog anti-alias filter, unity-gain op-amp buffer or ADS1115 in the primary RIP path. I am not sampling an analog respiration voltage; I am measuring the timing of oscillator edges digitally.
-
-I will still isolate and condition the oscillator output before the MCU. My current plan is to use a small Schmitt-input logic buffer so the oscillator is not unnecessarily loaded and the Nordic receives clean digital edges.
-
----
-
-## First-pass calculations
-
-I do not yet have an LCR meter or measured electrical data for the RIP belt, so I am treating the initial belt model as a **design assumption**, not a measured value.
-
-For the first calculation pass I used:
-
-- supply voltage: **3.3 V**
-- assumed nominal RIP belt inductance: **2 µH**
-- provisional design range: **1.5 µH to 2.5 µH**
-- Colpitts capacitors: **C1 = 10 nF, C2 = 10 nF**
-
-The equivalent Colpitts capacitance I calculated is:
-
-```text
-Ceq = (C1 × C2) / (C1 + C2)
-    = (10 nF × 10 nF) / (10 nF + 10 nF)
-    = 5 nF
-```
-
-Using the standard LC resonance relationship:
-
-```text
-f0 = 1 / (2π√(LC))
-```
-
-with my provisional **2 µH** belt value and **5 nF** equivalent capacitance gives a nominal frequency of approximately:
-
-**1.59 MHz**
-
-For the assumed inductance range I calculate approximately:
-
-| RIP belt inductance | Calculated oscillator frequency |
-|---:|---:|
-| 1.5 µH | 1.84 MHz |
-| 2.0 µH | 1.59 MHz |
-| 2.5 µH | 1.42 MHz |
-
-As a simple sensitivity example, if the belt inductance increased by 5% from **2.0 µH to 2.1 µH**, the calculated frequency changes from approximately **1.592 MHz to 1.553 MHz**, a shift of about **38 kHz**.
-
-I am using these values only to establish a sensible first simulation and schematic. I will replace the assumed belt model with measured values once I have prototype hardware and suitable test equipment.
-
----
-
-## LTspice verification plan
-
-Before committing the oscillator to PCB layout I will reproduce the first-pass design in LTspice.
-
-I intend to use the simulation to check:
-
-- oscillator startup
-- steady-state waveform
-- nominal oscillation frequency
-- transistor bias/current
-- output amplitude
-- belt inductance sweep from 1.5 µH to 2.5 µH
-- sensitivity of frequency to inductance change
-- capacitor tolerance
-- 3.3 V supply variation
-- belt series resistance / resonator loss sensitivity
-- loading introduced by the output buffer
-
-The LTspice results will then be compared with the hand calculations before I finalise the Altium schematic.
-
----
-
-## Dedicated inductance-to-digital alternative
-
-I also considered the **TI LDC1612** as an alternative architecture. A two-channel inductance-to-digital converter is attractive because one IC could potentially measure both the thoracic and abdominal resonant sensors and send the results to the Nordic over I²C.
-
-Conceptually:
-
-```mermaid
-flowchart LR
-    A["Thorax RIP + C"] --> C["LDC1612<br/>Channel 0"]
-    B["Abdomen RIP + C"] --> D["LDC1612<br/>Channel 1"]
-    C --> E["I2C"]
-    D --> E
-    E --> F["nRF54L20A"]
-```
-
-I have not selected the LDC1612 for Rev A because the electrical characteristics of the large wearable RIP belt are still unknown, including inductance, parasitic capacitance, AC resistance and resonator Q. I want the first prototype to expose these behaviours rather than hide them behind a dedicated converter.
-
-If the discrete prototype proves the belt characteristics and the LDC1612 operating range is suitable, I can revisit it as a later size/power/component-count optimisation.
-
----
-
-## Altium hardware project
-
-I created a dedicated Altium project for the RIP front-end work:
-
-`hardware/SomniMate_RIP_AFE_Prototype/`
-
-I organised it as:
-
-```text
-SomniMate_RIP_AFE_Prototype/
-├── Draftsman/
-├── Libraries/
-├── Outputs/
-├── PCB/
-├── Schematic/
-├── README.md
-└── SomniMate_RIP_AFE_Prototype.PrjPcb
-```
-
-**[View the hardware development](hardware/)**
-
-The first hardware milestone is a clean, repeatable single-channel frequency shift that tracks controlled RIP belt movement. Only after I have characterised that signal chain will I duplicate it for synchronized thoracic and abdominal channels.
+**[View the RIP AFE design, calculations and LTspice verification →](hardware/SomniMate_RIP_AFE_Prototype/)**
 
 ---
 
@@ -362,11 +217,14 @@ I added the BH1750 as a contextual sensor rather than a primary respiratory sens
 - [x] Define Rev-A design criteria
 - [x] Compare discrete and dedicated inductance-conversion architectures
 - [x] Select discrete Colpitts oscillator for Rev A
-- [x] Establish provisional 2 µH belt model and first-pass LC calculations
-- [ ] Select and bias the active oscillator device
-- [ ] Select the Schmitt / logic output buffer
-- [ ] Build the LTspice model
-- [ ] Run inductance and tolerance sweeps
+- [x] Establish provisional 2 µH belt model
+- [x] Calculate nominal LC resonance
+- [x] Select and bias TMBT3904 oscillator device
+- [x] Build LTspice oscillator model
+- [x] Run RIP inductance sweep
+- [x] Evaluate belt series-resistance / Q sensitivity
+- [x] Add attenuation and Schmitt-trigger output conditioning
+- [x] Verify clean 0–3.3 V `FREQ_RIP` output in LTspice
 - [ ] Complete the Altium schematic
 - [ ] Design the prototype PCB
 - [ ] Assemble and bring up the prototype

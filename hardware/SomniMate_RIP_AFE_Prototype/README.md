@@ -109,7 +109,7 @@ This was my first-order design target before simulation.
 
 I built the Rev A common-base Colpitts model in LTspice and annotated the circuit with the assumptions and key design intent.
 
-![Rev A Colpitts schematic](Simulations/LTspice/images/01_Colpitts_RevA_Schematic.jpg)
+![Rev A Colpitts schematic](Simulations/LTSpice/Images/01_Colpitts_RevA_Schematic.jpg)
 
 ### 2. RIP inductance sensitivity
 
@@ -127,7 +127,7 @@ The result confirms the expected monotonic relationship: increasing inductance l
 | 2.0 µH | 5.03 MHz | ~4.9 MHz |
 | 2.5 µH | 4.50 MHz | ~4.4 MHz |
 
-![RIP inductance sweep](Simulations/LTspice/images/02_Lrip_Sweep_1p5u_2u_2p5u.jpg)
+![RIP inductance sweep](Simulations/LTSpice/Images/02_Lrip_Sweep_1p5u_2u_2p5u.pjpg.JPG)
 
 The small difference between the ideal calculation and simulated result is expected because the hand calculation treats the tank as ideal while the LTspice circuit includes transistor loading and parasitic behaviour.
 
@@ -146,7 +146,7 @@ At 3.3 V this corresponds to approximately:
 P ≈ 3.3 V × 0.607 mA ≈ 2.0 mW
 ```
 
-![DC operating point](Simulations/LTspice/images/04_DC_Operating_Point.jpg)
+![DC operating point](Simulations/LTSpice/Images/04_DC_Operating_Point.JPG)
 
 This is a useful first-pass result for a battery-powered wearable sensor channel. I have not yet attempted to optimize the oscillator below this current.
 
@@ -156,7 +156,7 @@ A real RIP belt is not an ideal inductor. I therefore added a series-resistance 
 
 The simulation showed the expected behaviour: as belt series resistance increases, resonator Q and oscillator amplitude decrease. The current Rev A topology has strong oscillation margin around the provisional **2 Ω** case, while 5–10 Ω produces substantially reduced amplitude.
 
-![RIP belt series resistance sweep](Simulations/LTspice/images/05_RIP_Belt_Series_Resistance_Sweep_Steady_State.jpg)
+![RIP belt series resistance sweep](Simulations/LTSpice/Images/05_RIP_Belt_Series_Resistance_Sweep_Steady_State.jpg)
 
 This makes actual belt resistance and Q important characterization parameters for physical prototype testing.
 
@@ -176,21 +176,21 @@ For the physical design I intend to use a single-gate Schmitt buffer such as the
 
 ### Raw oscillator waveform
 
-![OSC RAW](Simulations/LTspice/images/06_OSC_RAW_Nominal_2uH_2ohm.jpg)
+![OSC RAW](Simulations/LTSpice/Images/06_OSC_RAW_Nominal_2uH_2ohm.jpg)
 
 ### Attenuated / protected buffer input
 
-![Buffer input](Simulations/LTspice/images/07_BUF_IN_Attenuated_Protected.jpg)
+![Buffer input](Simulations/LTSpice/Images/07_BUF_IN_Attenuated_Protected.jpg)
 
 ### Schmitt output
 
-![FREQ RIP](Simulations/LTspice/images/08_FREQ_RIP_Schmitt_Output.jpg)
+![FREQ RIP](Simulations/LTSpice/Images/08_FREQ_RIP_Schmitt_Output.jpg)
 
 ### Complete signal conversion
 
 The combined plot is the clearest summary of the Rev A signal chain: the resonant waveform is attenuated and then converted to a clean logic-level frequency signal for the MCU timer/counter.
 
-![OSC RAW, BUF IN and FREQ RIP](Simulations/LTspice/images/09_OSC_RAW_BUF_IN_FREQ_RIP_Combined.jpg)
+![OSC RAW, BUF IN and FREQ RIP](Simulations/LTSpice/Images/09_OSC_RAW_BUF_IN_FREQ_RIP_Combined.jpg)
 
 ---
 
@@ -230,24 +230,16 @@ Formal patient safety, regulatory classification and IEC 60601 compliance are ou
 
 ```text
 SomniMate_RIP_AFE_Prototype/
-├── Draftsman/
-├── Libraries/
-├── Outputs/
-├── PCB/
-├── Reports/
-│   └── SomniMate_RIP_AFE_RevA_Colpitts_Design_and_LTspice_Verification.pdf
 ├── Schematic/
 │   └── RIP_AFE.SchDoc
 ├── Simulations/
-│   └── LTspice/
+│   └── LTSpice/
 │       ├── SomniMate_RIP_Colpitts_RevA.asc
 │       ├── SomniMate_RIP_Colpitts_RevA_Buffered.asc
-│       └── images/
+│       └── Images/
 ├── README.md
 └── SomniMate_RIP_AFE_Prototype.PrjPcb
 ```
-
-**[Detailed Rev A design and LTspice verification report](Reports/SomniMate_RIP_AFE_RevA_Colpitts_Design_and_LTspice_Verification.pdf)**
 
 ---
 

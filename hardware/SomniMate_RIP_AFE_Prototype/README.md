@@ -6,7 +6,7 @@ This folder is the engineering record for the first custom SomniMate respiratory
 
 I am using a hardware-first approach: define the sensing requirement, calculate a starting circuit, verify it in LTspice, document the assumptions and then carry the verified design into Altium for PCB development.
 
-> **Status:** Rev A oscillator and digital output-conditioning concept verified in LTspice. Altium implementation is the next step.
+> **Status:** Rev A oscillator, output conditioning and `3V3_AFE` supply filtering have been verified in LTspice and transferred into a completed Altium schematic. PCB development is the next step.
 >
 > This is a non-clinical R&D prototype, not a diagnostic or therapeutic medical device.
 
@@ -69,7 +69,7 @@ I do not yet have measured LCR data for the physical RIP belt, so the belt value
 | Parameter | Rev A value |
 |---|---:|
 | Supply | 3.3 V |
-| Q1 | TMBT3904 |
+| Q1 hardware | MMBT3904LT1G |
 | R1 | 47 kΩ |
 | R2 | 18 kΩ |
 | R3 | 470 Ω |
@@ -81,8 +81,11 @@ I do not yet have measured LCR data for the physical RIP belt, so the belt value
 | C3 | 100 nF |
 | C4 | 10 nF |
 | Output divider R5/R6 | 10 kΩ / 10 kΩ |
-| Output clamp | BAT54S-type Schottky clamps |
-| Schmitt function | 0–3.3 V logic output |
+| Output clamp | BAT54SLT1G |
+| Schmitt buffer | SN74LVC1G17DBVR |
+| Output series resistor R7 | 47 Ω |
+| Supply filter | 1 µF / 10 Ω / 1 µF + 100 nF |
+| U1 local decoupling | 100 nF |
 
 For the Colpitts divider:
 
@@ -167,14 +170,13 @@ The oscillator simulation also exposed an important interface requirement: the r
 I therefore added:
 
 - a **10 kΩ / 10 kΩ divider** to attenuate `OSC_RAW`
-- small-signal **Schottky clamp protection** around the buffer input
-- a **Schmitt-trigger buffer** to convert the sine-like waveform into a clean 0–3.3 V digital signal
+- a **BAT54SLT1G dual Schottky clamp** around the buffer input
+- an **SN74LVC1G17DBVR Schmitt-trigger buffer** to convert the sine-like waveform into a clean 0–3.3 V digital signal
+- a **47 Ω series resistor** on `FREQ_RIP`
 
-For the physical design I intend to use a single-gate Schmitt buffer such as the **SN74LVC1G17**. The LTspice model uses the generic behavioral `schmtbuf` device to verify the transfer concept.
+The LTspice model uses the generic behavioral `schmtbuf` device to verify the transfer concept; the Altium implementation uses the selected hardware part.
 
 ### Final attenuated, protected and buffered Rev A schematic
-
-This final LTspice version includes the oscillator, attenuation network, Schottky clamp protection and Schmitt-trigger buffer. It represents the complete Rev A signal path from RIP inductance sensing through to a logic-level `FREQ_RIP` output intended for direct measurement by the MCU timer/counter.
 
 ![Buffered Rev A Colpitts schematic](Simulations/LTSpice/Images/SomniMate_RIP_Colpitts_RevA_Buffered.jpg)
 
@@ -192,15 +194,72 @@ This final LTspice version includes the oscillator, attenuation network, Schottk
 
 ### Complete signal conversion
 
-The combined plot is the clearest summary of the Rev A signal chain: the resonant waveform is attenuated and then converted to a clean logic-level frequency signal for the MCU timer/counter.
-
 ![OSC RAW, BUF IN and FREQ RIP](Simulations/LTSpice/Images/09_OSC_RAW_BUF_IN_FREQ_RIP_Combined.jpg)
 
 ---
 
-## Engineering conclusions from Rev A simulation
+## 3V3_AFE supply filtering
 
-The LTspice work has established enough confidence to move into Altium:
+I added a simple **C-R-C / RC π-style supply filter** between the main 3.3 V rail and the sensitive RIP AFE supply.
+
+The implemented network is:
+
+```text
+3V3 ----+---- R8 10Ω ----+---- 3V3_AFE
+        |                |
+      C5 1µF           C6 1µF
+        |                |
+       GND             C7 100nF
+                         |
+                        GND
+```
+
+C6 and C7 are electrically in parallel. A separate **C8 = 100 nF** is placed locally at the SN74LVC1G17 supply pins.
+
+The purpose is to reduce supply-borne digital noise reaching the oscillator and to provide impedance isolation between the AFE and the main 3.3 V rail. It is not galvanic isolation.
+
+I modelled the filter separately in LTspice using a simplified 0.5 Ω source/interconnect impedance and an AC sweep from 10 Hz to 500 MHz.
+
+![3V3 AFE pi-style filter schematic](Simulations/LTSpice/Images/10_3V3_AFE_Pi_Filter_Schematic.jpg)
+
+![3V3 input versus filtered AFE rail](Simulations/LTSpice/Images/11_3V3_IN_vs_3V3_AFE_AC_Response.jpg)
+
+![3V3 AFE filter attenuation](Simulations/LTSpice/Images/12_3V3_AFE_Filter_Attenuation.jpg)
+
+The simplified transfer model shows approximately **-50.9 dB attenuation at 5.06 MHz** for `V(3V3_AFE)/V(3V3_IN)`. This is a useful architecture-level result because the nominal RIP oscillator operates near 5 MHz, but it should not be treated as measured PCB performance. Real capacitor ESR, ESL, package parasitics and layout will alter the high-frequency response.
+
+**[View the detailed supply-filter study →](Simulations/LTSpice/3V3_AFE_SUPPLY_FILTER.md)**
+
+---
+
+## Rev A Altium schematic
+
+The verified LTspice architecture has now been transferred into a complete Altium schematic titled:
+
+**SomniLink — Respiratory Inductance Plethysmography (RIP) Analog Front End — Rev A**
+
+Drawing number: **SM-RIP-AFE-001**  
+Revision: **A**
+
+The schematic includes:
+
+- selected real components for Q1, D1 and U1
+- `OSC_RAW`, `BUF_IN` and `FREQ_RIP` signal labels
+- `3V3_AFE` filtered supply rail
+- explicit supply and signal test points
+- provisional external RIP-belt assumption note
+- local decoupling
+- drawing title, revision, author and project identification
+
+J1 remains a schematic-level generic two-pin RIP belt interface because the final physical strap termination / snap implementation has not yet been selected.
+
+**[View the Rev A schematic PDF →](Outputs/SomniLink_RIP_AFE_RevA_Schematic.pdf)**
+
+---
+
+## Engineering conclusions from Rev A
+
+The work to date has established enough confidence to proceed into PCB development:
 
 - the discrete Colpitts architecture starts and sustains oscillation with the provisional RIP model
 - the calculated and simulated nominal frequencies are in close agreement
@@ -210,6 +269,8 @@ The LTspice work has established enough confidence to move into Altium:
 - the raw resonant node can exceed normal MCU input levels
 - attenuation, limiting and Schmitt edge conditioning provide a practical digital `FREQ_RIP` interface
 - the nRF54L20A can therefore measure respiratory information as frequency rather than ADC voltage
+- supply filtering has been added to reduce coupling from the main digital 3.3 V rail into the RIP AFE
+- the complete Rev A circuit is now captured in Altium with test points and selected physical components
 
 ---
 
@@ -236,11 +297,17 @@ Formal patient safety, regulatory classification and IEC 60601 compliance are ou
 SomniMate_RIP_AFE_Prototype/
 ├── Schematic/
 │   └── RIP_AFE.SchDoc
+├── Outputs/
+│   └── SomniLink_RIP_AFE_RevA_Schematic.pdf
 ├── Simulations/
 │   └── LTSpice/
 │       ├── SomniMate_RIP_Colpitts_RevA.asc
 │       ├── SomniMate_RIP_Colpitts_RevA_Buffered.asc
+│       ├── SomniMate_RIP_AFE_3V3_Pi_Filter.asc
+│       ├── 3V3_AFE_SUPPLY_FILTER.md
 │       └── Images/
+├── Libraries/
+├── SomniMate_RIP_AFE_Prototype.OutJob
 ├── README.md
 └── SomniMate_RIP_AFE_Prototype.PrjPcb
 ```
@@ -249,7 +316,7 @@ SomniMate_RIP_AFE_Prototype/
 
 ## Next step
 
-The next engineering step is to reproduce the verified Rev A circuit in Altium with real component selections, decoupling, connector protection and test points, followed by PCB layout.
+The next engineering step is **PCB design** for the Rev A RIP AFE.
 
 Physical belt characterization will then replace the provisional 2 µH / 2 Ω model with measured values and determine whether Rev A needs to be retuned before dual-channel development.
 

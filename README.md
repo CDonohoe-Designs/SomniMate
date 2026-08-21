@@ -8,9 +8,9 @@ SomniMate is an engineering R&D project I am developing to investigate a specifi
 
 I am approaching the project as a hardware-first investigation. My priority is to acquire good respiratory data, understand the signal chain and test the hypothesis before making predictive claims.
 
-The longer-term system concept is a BLE-connected wearable platform. SomniMate would act as the low-power sensing edge device, with a phone or PC client receiving data over BLE. A future mobile app could then provide the Internet gateway to an optional IoT backend for session storage, multi-night analysis and research/clinician-facing dashboards. The app/cloud layer is intentionally deferred until the sensor chain and physiological value have been demonstrated.
+The longer-term system concept is a connected wearable platform. SomniMate would act as the low-power sensing edge device, with a phone or PC client receiving data over BLE. A future mobile app could then provide the Internet gateway to an optional IoT backend for session storage, multi-night analysis and research dashboards. The app/cloud layer is intentionally deferred until the sensor chain and physiological value have been demonstrated.
 
-> **Project status:** active research and development. Firmware and sensor bring-up are in progress, and the first custom RIP front-end Rev A architecture has now been calculated and verified in LTspice before transfer into Altium.
+> **Project status:** active research and development. The first custom RIP front-end Rev A has now progressed from hand calculation and LTspice verification into a completed Altium schematic with defined components, test points, output conditioning and filtered `3V3_AFE` supply. PCB development is the next hardware step.
 >
 > SomniMate is not a diagnostic medical device and is not intended for clinical use.
 
@@ -88,7 +88,7 @@ flowchart LR
     L --> M["Mobile App / PC Client"]
     M --> N["Optional IoT Backend"]
     M --> O["Local Analysis"]
-    N --> P["multi-night analysis / Dashboard"]
+    N --> P["Multi-Night Analysis / Dashboard"]
 ```
 
 I originally evaluated the ADS1115 as part of the respiratory acquisition path. After selecting a frequency-output RIP architecture, I no longer need an ADC in the primary RIP channel. The nRF54L20A can measure the oscillator frequency directly using a hardware timer/counter.
@@ -104,6 +104,8 @@ For Rev A I selected a **discrete common-base Colpitts oscillator** so that RIP-
 The provisional model uses a 2 µH belt inductance, 2 Ω series-loss model and 1 nF / 1 nF Colpitts capacitive divider. I calculated a nominal resonance of approximately **5.03 MHz**; LTspice produced approximately **4.9 MHz** for the nominal case. Sweeping the assumed belt inductance from 1.5 µH to 2.5 µH produced approximately 5.6 MHz to 4.4 MHz, confirming the expected frequency sensitivity.
 
 The oscillator simulation also showed that the raw resonant waveform requires conditioning before it reaches the Nordic MCU. I therefore added attenuation, Schottky limiting and a Schmitt-trigger stage to produce a clean **0–3.3 V `FREQ_RIP`** signal for direct timer/counter measurement.
+
+The Altium Rev A schematic now implements the signal chain using an **MMBT3904LT1G** oscillator transistor, **BAT54SLT1G** Schottky clamp, **SN74LVC1G17DBVR** Schmitt buffer, a **47 Ω** series resistor on `FREQ_RIP`, explicit test points, and a filtered `3V3_AFE` rail. The AFE supply uses a simple **C-R-C / RC π-style filter** with 1 µF input capacitance, 10 Ω series isolation and 1 µF + 100 nF output decoupling, plus local 100 nF decoupling at the Schmitt buffer.
 
 ```mermaid
 flowchart LR
@@ -164,16 +166,18 @@ flowchart LR
     C --> E["Local Session Review"]
     D --> F["Session Storage"]
     D --> G["Multi-Night Trends"]
-    D --> H["Research / Clinician Dashboard"]
+    D --> H["Research Dashboard"]
 ```
 
 The intended division of responsibility is:
 
 - **SomniMate wearable** — sensor acquisition, timestamping, signal-quality checks, local buffering and BLE communication.
 - **Mobile app / PC client** — pairing, device status, recording control, data transfer, basic visualization and acting as the Internet gateway.
-- **IoT backend** — optional later layer for synchronized session storage, multi-night analysis algorithm development and remote dashboards.
+- **IoT backend** — optional later layer for synchronized session storage, multi-night analysis, algorithm development and remote research dashboards.
 
 This keeps the body-worn hardware focused on sensing, synchronization and low-power BLE while allowing Internet connectivity to evolve independently. No app, cloud service or remote monitoring claim is part of the current hardware proof of concept.
+
+**[View the connected IoT architecture →](docs/CONNECTED_IOT_ARCHITECTURE.md)**
 
 ---
 
@@ -250,13 +254,17 @@ I added the BH1750 as a contextual sensor rather than a primary respiratory sens
 - [x] Select discrete Colpitts oscillator for Rev A
 - [x] Establish provisional 2 µH belt model
 - [x] Calculate nominal LC resonance
-- [x] Select and bias TMBT3904 oscillator device
+- [x] Select and bias 3904-family oscillator device
 - [x] Build LTspice oscillator model
 - [x] Run RIP inductance sweep
 - [x] Evaluate belt series-resistance / Q sensitivity
 - [x] Add attenuation and Schmitt-trigger output conditioning
 - [x] Verify clean 0–3.3 V `FREQ_RIP` output in LTspice
-- [ ] Complete the Altium schematic
+- [x] Add and simulate `3V3_AFE` RC π-style supply filter
+- [x] Select real Rev A parts for Q1, D1 and U1
+- [x] Add prototype test points
+- [x] Complete the Rev A Altium schematic
+- [x] Generate the Rev A schematic PDF output
 - [ ] Design the prototype PCB
 - [ ] Assemble and bring up the prototype
 - [ ] Characterise actual belt inductance / sensitivity / losses

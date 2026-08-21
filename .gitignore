@@ -1,7 +1,24 @@
-hardware/SomniMate_RIP_AFE_Prototype/Schematic/__Previews/RIP_AFE.SchDocPreview
+# Altium generated history / previews / project UI state
+hardware/SomniMate_RIP_AFE_Prototype/**/History/
+hardware/SomniMate_RIP_AFE_Prototype/**/__Previews/
+hardware/SomniMate_RIP_AFE_Prototype/**/*.SchDocPreview
+hardware/SomniMate_RIP_AFE_Prototype/**/*.PcbDocPreview
+hardware/SomniMate_RIP_AFE_Prototype/**/*.PrjPcbStructure
+
+# General-purpose personal Altium libraries copied into this project
+# Keep the public repo project-specific; copy only required symbols/footprints
+# into project libraries when needed.
+hardware/SomniMate_RIP_AFE_Prototype/Libraries/Caoilte_Libraries/
+
+# Manufacturer Part Search downloads
+# Keep the editable .SchLib and .PcbLib sources; ignore packaged/compiled duplicates.
+hardware/SomniMate_RIP_AFE_Prototype/Libraries/Manufacturer_Parts/**/*.zip
+hardware/SomniMate_RIP_AFE_Prototype/Libraries/Manufacturer_Parts/**/*.IntLib
+hardware/SomniMate_RIP_AFE_Prototype/Libraries/Manufacturer_Parts/**/*.LibPkg
 
 # LTspice generated simulation outputs
-hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.raw
-hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.log
-hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.net
-hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTspice/*.op.raw
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTSpice/*.raw
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTSpice/*.log
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTSpice/*.net
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTSpice/*.op.raw
+hardware/SomniMate_RIP_AFE_Prototype/Simulations/LTSpice/*.plt

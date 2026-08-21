@@ -8,7 +8,7 @@ SomniMate is an engineering R&D project I am developing to investigate a specifi
 
 I am approaching the project as a hardware-first investigation. My priority is to acquire good respiratory data, understand the signal chain and test the hypothesis before making predictive claims.
 
-The longer-term system concept is a BLE-connected wearable platform. SomniMate would act as the low-power sensing edge device, with a phone or PC client receiving data over BLE. A future mobile app could then provide the Internet gateway to an optional IoT backend for session storage, longitudinal analysis and research/clinician-facing dashboards. The app/cloud layer is intentionally deferred until the sensor chain and physiological value have been demonstrated.
+The longer-term system concept is a BLE-connected wearable platform. SomniMate would act as the low-power sensing edge device, with a phone or PC client receiving data over BLE. A future mobile app could then provide the Internet gateway to an optional IoT backend for session storage, multi-night analysis and research/clinician-facing dashboards. The app/cloud layer is intentionally deferred until the sensor chain and physiological value have been demonstrated.
 
 > **Project status:** active research and development. Firmware and sensor bring-up are in progress, and the first custom RIP front-end Rev A architecture has now been calculated and verified in LTspice before transfer into Altium.
 >
@@ -88,7 +88,7 @@ flowchart LR
     L --> M["Mobile App / PC Client"]
     M --> N["Optional IoT Backend"]
     M --> O["Local Analysis"]
-    N --> P["Longitudinal Analysis / Dashboard"]
+    N --> P["multi-night analysis / Dashboard"]
 ```
 
 I originally evaluated the ADS1115 as part of the respiratory acquisition path. After selecting a frequency-output RIP architecture, I no longer need an ADC in the primary RIP channel. The nRF54L20A can measure the oscillator frequency directly using a hardware timer/counter.
@@ -171,7 +171,7 @@ The intended division of responsibility is:
 
 - **SomniMate wearable** — sensor acquisition, timestamping, signal-quality checks, local buffering and BLE communication.
 - **Mobile app / PC client** — pairing, device status, recording control, data transfer, basic visualization and acting as the Internet gateway.
-- **IoT backend** — optional later layer for synchronized session storage, longitudinal trend analysis, algorithm development and remote dashboards.
+- **IoT backend** — optional later layer for synchronized session storage, multi-night analysis algorithm development and remote dashboards.
 
 This keeps the body-worn hardware focused on sensing, synchronization and low-power BLE while allowing Internet connectivity to evolve independently. No app, cloud service or remote monitoring claim is part of the current hardware proof of concept.
 

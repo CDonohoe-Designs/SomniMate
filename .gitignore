@@ -9,6 +9,7 @@ hardware/SomniMate_RIP_AFE_Prototype/**/*.PrjPcbStructure
 # Keep the public repo project-specific; copy only required symbols/footprints
 # into project libraries when needed.
 hardware/SomniMate_RIP_AFE_Prototype/Libraries/Caoilte_Libraries/
+hardware/SomniMate_RIP_AFE_Prototype/Project Outputs for SomniMate_RIP_AFE_Prototype/
 
 # Manufacturer Part Search downloads
 # Keep the editable .SchLib and .PcbLib sources; ignore packaged/compiled duplicates.

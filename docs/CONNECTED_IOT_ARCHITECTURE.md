@@ -12,7 +12,7 @@ flowchart LR
     D --> E
     E -->|BLE| F[Mobile companion]
     F -->|Secure network connection| G[Cloud-connected data store / analysis]
-    G --> H[Longitudinal signal review\nand research analysis]
+    G --> H[Multi-night signal review\nand research analysis]
 ```
 
 ## System partitioning
@@ -31,7 +31,7 @@ The intended mobile layer provides the BLE gateway, device configuration, sessio
 
 ### Cloud-connected analysis
 
-A later cloud layer can provide session storage, longitudinal comparison and offline analysis of respiratory patterns. This is an R&D data-analysis architecture rather than a claim of clinical diagnosis or validated medical monitoring.
+A later cloud layer can provide session storage, multi-night comparison and offline analysis of respiratory patterns. This is an R&D data-analysis architecture rather than a claim of clinical diagnosis or validated medical monitoring.
 
 ## Why use BLE rather than connecting the wearable directly to the cloud?
 

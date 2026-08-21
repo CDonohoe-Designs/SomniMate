@@ -8,6 +8,8 @@ SomniMate is an engineering R&D project I am developing to investigate a specifi
 
 I am approaching the project as a hardware-first investigation. My priority is to acquire good respiratory data, understand the signal chain and test the hypothesis before making predictive claims.
 
+The longer-term system concept is a BLE-connected wearable platform. SomniMate would act as the low-power sensing edge device, with a phone or PC client receiving data over BLE. A future mobile app could then provide the Internet gateway to an optional IoT backend for session storage, longitudinal analysis and research/clinician-facing dashboards. The app/cloud layer is intentionally deferred until the sensor chain and physiological value have been demonstrated.
+
 > **Project status:** active research and development. Firmware and sensor bring-up are in progress, and the first custom RIP front-end Rev A architecture has now been calculated and verified in LTspice before transfer into Altium.
 >
 > SomniMate is not a diagnostic medical device and is not intended for clinical use.
@@ -46,9 +48,10 @@ flowchart LR
     C --> D["Dual-Channel Custom Hardware"]
     D --> E["SomniMate + SomniLink"]
     E --> F["Thorax-Abdomen Research"]
+    F --> G["BLE App + IoT Integration"]
 ```
 
-My immediate engineering goal is not a finished wearable. It is to establish a reliable single-channel respiratory-effort signal chain, understand its electrical and mechanical behaviour, and use measured results to drive the later integrated hardware.
+My immediate engineering goal is not a finished wearable or cloud platform. It is to establish a reliable single-channel respiratory-effort signal chain, understand its electrical and mechanical behaviour, and use measured results to drive the later integrated hardware.
 
 ---
 
@@ -79,10 +82,13 @@ flowchart LR
     H --> J["Timestamping"]
     H --> K["Signal Quality / Fault Handling"]
 
-    I --> L["BLE / Data Logging"]
+    I --> L["BLE / Local Data Logging"]
     J --> L
     K --> L
-    L --> M["PC Analysis"]
+    L --> M["Mobile App / PC Client"]
+    M --> N["Optional IoT Backend"]
+    M --> O["Local Analysis"]
+    N --> P["Longitudinal Analysis / Dashboard"]
 ```
 
 I originally evaluated the ADS1115 as part of the respiratory acquisition path. After selecting a frequency-output RIP architecture, I no longer need an ADC in the primary RIP channel. The nRF54L20A can measure the oscillator frequency directly using a hardware timer/counter.
@@ -143,6 +149,31 @@ flowchart LR
 ```
 
 I have intentionally not fixed the eventual SomniLink-to-SomniMate interface yet. Synchronization, signal quality, size and power will drive that decision.
+
+---
+
+## Planned connected system architecture
+
+SomniMate is intended to become the edge node of a connected monitoring platform without requiring Wi-Fi or cellular hardware in the wearable itself.
+
+```mermaid
+flowchart LR
+    A["SomniMate + SomniLink<br/>Respiratory Sensing"] --> B["SomniMate<br/>nRF54 + Zephyr"]
+    B -->|"BLE"| C["SomniMate Mobile App"]
+    C -->|"Wi-Fi / Cellular"| D["Optional IoT Backend"]
+    C --> E["Local Session Review"]
+    D --> F["Session Storage"]
+    D --> G["Multi-Night Trends"]
+    D --> H["Research / Clinician Dashboard"]
+```
+
+The intended division of responsibility is:
+
+- **SomniMate wearable** — sensor acquisition, timestamping, signal-quality checks, local buffering and BLE communication.
+- **Mobile app / PC client** — pairing, device status, recording control, data transfer, basic visualization and acting as the Internet gateway.
+- **IoT backend** — optional later layer for synchronized session storage, longitudinal trend analysis, algorithm development and remote dashboards.
+
+This keeps the body-worn hardware focused on sensing, synchronization and low-power BLE while allowing Internet connectivity to evolve independently. No app, cloud service or remote monitoring claim is part of the current hardware proof of concept.
 
 ---
 
@@ -242,6 +273,15 @@ I added the BH1750 as a contextual sensor rather than a primary respiratory sens
 - [ ] Evaluate wearable implementation
 - [ ] Begin overnight dual-channel data collection
 - [ ] Perform thoraco-abdominal phase / coordination analysis
+
+### Connected app / IoT layer — later phase
+
+- [ ] Define BLE GATT services and structured session-data format
+- [ ] Prototype SomniMate mobile app or PC client
+- [ ] Implement device status, recording control and data transfer over BLE
+- [ ] Define secure app-to-backend session upload
+- [ ] Prototype optional IoT session storage
+- [ ] Add multi-night trend and research-dashboard capability
 
 ---
 
